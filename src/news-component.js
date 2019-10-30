@@ -3,7 +3,7 @@ import { styles } from './styles/news-component.css'
 
 
 
-var chanelCodes = ['usa-today', 'CNN', 'the-verge']
+var chanelCodes = ['usa-today', 'CNN', 'the-verge','cnbc']
 
 async function getNews(chanelCode)
 {
@@ -18,54 +18,102 @@ async function getNews(chanelCode)
 }
 
 
- function createLinks(array)
-  { 
-     array.forEach((element) => 
-     {
-        var item = document.getElementById('col2');
-        var li = document.createElement('li');
-        var img = document.createElement('img');
-        var a = document.createElement('a');
-        img.src = element.urlToImage;
-        a.innerText = element.title;
-        a.href = element.url;
-        li.appendChild(img);
-        li.appendChild(a);
-        item.appendChild(li);
-     })
-     
-  }
-
   function clearLinks()
   {
-    var item = document.getElementById('col2');
+    var item = document.getElementById('grid');
     item.innerHTML = "";
-
   }
-function createlist() {
+
+  function createlist() {
+    var item = document.getElementById('dropdown-list');
+    appendOptionElement(item, null, 'default', 'select...');
+
     chanelCodes.forEach((element) => 
-    {
-        var item = document.getElementById('col1');
-        var li = document.createElement('li'),
-        txt = document.createTextNode(element);
-        li.id = element
-        li.appendChild(txt);
-        item.appendChild(li);
+    {     
+        appendOptionElement(item,element,element, element);
     });
 }
 
 
+ function createLinks(array)
+  { 
+     array.forEach((element) => 
+     {
+        var row = document.getElementById('grid');
+
+        row.appendChild(
+            appendTextLinkToElement(
+                appendImageToElement(createThumbNail(), element.urlToImage), element.url, element.title))
+     })
+     
+  }
+
 
  function registerEvents(){
     chanelCodes.forEach(async (element) =>{
-        var item = document.getElementById(element)
-        item.addEventListener("click", async function(){
-        clearLinks()
-        var news = await getNews(element);
-        var links = news.articles.slice(0,10)
-        createLinks(links);
+        var item = document.getElementById("dropdown-list")
+
+        item.addEventListener("change", async function(){
+        if(this.value == 'default')
+            clearLinks()
+        if(this.value == element){
+            clearLinks()
+            var news = await getNews(element);
+            var links = news.articles
+            createLinks(links);
+        }
        })
     });
+}
+
+
+function appendTextLinkToElement(element,link,text)
+{
+    var a = document.createElement('a');
+    a.innerText = text;
+    a.href = link;
+    element.appendChild(a);
+    return element
+}
+
+function appendOptionElement(dropdownlist, id, value, innerText)
+{
+    var option = document.createElement('option');
+    if(innerText){
+        option.innerText = innerText
+    }
+    if(value){
+        option.value = value
+    }
+    if(id){
+        option.id = id
+    }
+    dropdownlist.appendChild(option);
+
+}
+function createThumbNail()
+{
+   var div = document.createElement('div')
+   appendStyleToElement(div,'thumbnail')
+   return div;
+}
+
+function appendImageToElement(element,link)
+{
+    var img = document.createElement('img');
+    if(link){
+    img.src = link;
+    }
+    element.appendChild(img);
+    return element;
+}
+
+
+function appendStyleToElement(element,style)
+{
+    if(style){
+    element.className = style;
+    }
 }
 
 
