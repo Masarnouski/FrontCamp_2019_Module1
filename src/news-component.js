@@ -1,122 +1,114 @@
-import { get } from './api.service.js'
-import { styles } from './styles/news-component.css'
+import get from './api.service.js'
 
 
+const chanelCodes = ['usa-today', 'CNN', 'the-verge', 'cnbc']
 
-var chanelCodes = ['usa-today', 'CNN', 'the-verge','cnbc']
-
-async function getNews(chanelCode)
-{
-    var response = await get(chanelCode)
+let getNews = async (chanelCode) => {
+    let response = await get(chanelCode)
 
     if (response.ok) {
         let json = await response.json();
-            return json;
-        } else {
-            alert("HTTP error: " + response.status);
+        return json;
+    } else {
+        alert("HTTP error: " + response.status);
     }
 }
 
 
-  function clearLinks()
-  {
-    var item = document.getElementById('grid');
-    item.innerHTML = "";
-  }
+function clearNewsSection() {
+    let newsSection = document.getElementById('news-section');
+    newsSection.innerHTML = "";
+}
 
-  function createlist() {
-    var item = document.getElementById('dropdown-list');
-    appendOptionElement(item, null, 'default', 'select...');
+function createDropdownList() {
+    let chanelCodesDropdown = document.getElementById('channel-codes-dropdown');
+    appendOptionElement(chanelCodesDropdown, null, 'default', 'select...');
 
-    chanelCodes.forEach((element) => 
-    {     
-        appendOptionElement(item,element,element, element);
+    chanelCodes.forEach((element) => {
+        appendOptionElement(chanelCodesDropdown, element, element, element);
     });
 }
 
 
- function createLinks(array)
-  { 
-     array.forEach((element) => 
-     {
-        var row = document.getElementById('grid');
+function formNewsSection(articlesArray) {
+    articlesArray.forEach((element) => {
+        let newsSection = document.getElementById('news-section');
 
-        row.appendChild(
+        newsSection.appendChild(
             appendTextLinkToElement(
-                appendImageToElement(createThumbNail(), element.urlToImage), element.url, element.title))
-     })
-     
-  }
+                appendImageToElement(createDivElement('thumbnail'), element.urlToImage), element.url, element.title))
+    })
+
+}
 
 
- function registerEvents(){
-    chanelCodes.forEach(async (element) =>{
-        var item = document.getElementById("dropdown-list")
+function registerOnDropDownChangeEvent() {
+    chanelCodes.forEach(async (chanelCode) => {
+        let chanelCodesDropdown = document.getElementById("channel-codes-dropdown")
 
-        item.addEventListener("change", async function(){
-        if(this.value == 'default')
-            clearLinks()
-        if(this.value == element){
-            clearLinks()
-            var news = await getNews(element);
-            var links = news.articles
-            createLinks(links);
-        }
-       })
+        chanelCodesDropdown.addEventListener("change", async function () {
+            if (this.value == 'default')
+                clearNewsSection()
+            if (this.value == chanelCode) {
+                clearNewsSection()
+                let news = await getNews(chanelCode);
+                let articles = news.articles;
+                formNewsSection(articles);
+            }
+        })
     });
 }
 
 
-function appendTextLinkToElement(element,link,text)
-{
-    var a = document.createElement('a');
-    a.innerText = text;
-    a.href = link;
-    element.appendChild(a);
+function appendTextLinkToElement(element, hrefLink, text) {
+    let aTag = document.createElement('a');
+    if (text) {
+        aTag.innerText = text;
+    }
+    if (hrefLink) {
+        aTag.href = hrefLink;
+    }
+    element.appendChild(aTag);
     return element
 }
 
-function appendOptionElement(dropdownlist, id, value, innerText)
-{
-    var option = document.createElement('option');
-    if(innerText){
+function appendOptionElement(dropdownlist, id, value, innerText) {
+    let option = document.createElement('option');
+    if (innerText) {
         option.innerText = innerText
     }
-    if(value){
+    if (value) {
         option.value = value
     }
-    if(id){
+    if (id) {
         option.id = id
     }
     dropdownlist.appendChild(option);
 
 }
-function createThumbNail()
-{
-   var div = document.createElement('div')
-   appendStyleToElement(div,'thumbnail')
-   return div;
+function createDivElement(id) {
+    let divTag = document.createElement('div')
+    appendStyleToElement(divTag, id)
+    return divTag;
 }
 
-function appendImageToElement(element,link)
-{
-    var img = document.createElement('img');
-    if(link){
-    img.src = link;
+function appendImageToElement(element, link) {
+    let img = document.createElement('img');
+    if (link) {
+        img.src = link;
     }
     element.appendChild(img);
     return element;
 }
 
 
-function appendStyleToElement(element,style)
-{
-    if(style){
-    element.className = style;
+function appendStyleToElement(element, style) {
+    if (style) {
+        element.className = style;
     }
 }
 
 
- createlist();
- registerEvents();
+createDropdownList();
+registerOnDropDownChangeEvent();
 
