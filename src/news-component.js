@@ -31,12 +31,12 @@ function createDropdownList() {
 
 
 function formNewsSection(articlesArray) {
-    articlesArray.forEach((element) => {
+    articlesArray.forEach((article) => {
         let newsSection = document.getElementById('news-section');
 
         newsSection.appendChild(
             appendTextLinkToElement(
-                appendImageToElement(createDivElement('thumbnail'), element.urlToImage), element.url, element.title))
+                appendImageToElement(createDivElement('thumbnail'), article.urlToImage), article.url, article.title))
     })
 
 }
