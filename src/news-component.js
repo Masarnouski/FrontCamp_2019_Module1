@@ -1,16 +1,17 @@
 import get from './api.service.js'
+import { modalSingleton } from './error-popup/error-popup.js'
+import handleError from './error-handler'
 
 
 const chanelCodes = ['usa-today', 'CNN', 'the-verge', 'cnbc']
 
 let getNews = async (chanelCode) => {
-    let response = await get(chanelCode)
-
-    if (response.ok) {
-        let json = await response.json();
-        return json;
-    } else {
-        alert("HTTP error: " + response.status);
+    try {
+        return await get(chanelCode);
+    }
+    catch (error) {
+        console.log(error);
+        handleError(error.message);
     }
 }
 
@@ -51,7 +52,9 @@ function registerOnDropDownChangeEvent() {
                 clearNewsSection()
             if (this.value == chanelCode) {
                 clearNewsSection()
-                let news = await getNews(chanelCode);
+
+                var news = await getNews(chanelCode);
+
                 let articles = news.articles;
                 formNewsSection(articles);
             }

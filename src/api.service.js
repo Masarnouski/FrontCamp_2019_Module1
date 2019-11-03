@@ -4,5 +4,14 @@ import { apiKey } from '../app-settings/app-settings'
 export default async function get(chanelCode) {
     var url = `https://newsapi.org/v1/articles?source=${chanelCode}&apiKey=${apiKey}`;
     var req = new Request(url);
-    return await fetch(req).catch((error) => console.log(error))
+    let response = await fetch(req);
+    if (response.ok) {
+        let json = await response.json();
+        if(json.articles.length < 10)
+        {
+            throw new Error('Too less results');
+        }
+        return json;
+    }
 }
+
