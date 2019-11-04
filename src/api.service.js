@@ -1,7 +1,7 @@
 
 import { apiKey } from '../app-settings/app-settings'
 
-export default async function get(chanelCode) {
+export async function get(chanelCode) {
     var url = `https://newsapi.org/v1/articles?source=${chanelCode}&apiKey=${apiKey}`;
     var req = new Request(url);
     let response = await fetch(req);
@@ -15,3 +15,11 @@ export default async function get(chanelCode) {
     }
 }
 
+export async function post(object) {
+    console.log(object);
+ }
+
+export async function put(id, object) {
+    console.log(id);
+    console.log(object);
+}

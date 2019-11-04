@@ -1,44 +1,36 @@
-export var modalSingleton = function () {
+export class modalSingleton {
 
-  var modalInstance;
+  //var modalInstance;
+  constructor() {
+    if (modalSingleton.instance) {
+      return modalSingleton.instance;
+    }
+    this.modal = document.getElementById("myModal");
 
-  function init() {
+    this.span = document.getElementsByClassName("close")[0];
 
-    // Get the modal
-    var modal = document.getElementById("myModal");
+    this.modalText = document.getElementById("modal-content-text");
 
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    var modalText = document.getElementById("modal-content-text");
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function () {
-      modal.style.display = "none";
+    this.span.onclick = () => {
+      console.log(this.span)
+      this.modal.style.display = "none";
     }
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
+    window.onclick = (event) => {
+      if (event.target == this.modal) {
+        this.modal.style.display = "none";
       }
     }
 
-    return {
-      show: function () {
-        modal.style.display = "block";
-      },
-      setModalText: function (text) {
-        modalText.innerHTML = text
-      }
-    }
+    modalSingleton.instance = this;
+    return this;
   }
-  return {
-    getInstance: function () {
-      if (!modalInstance) {
-        modalInstance = init();
-      }
-      return modalInstance;
-    }
+
+  show() {
+    this.modal.style.display = "block";
   }
-}();
+  setModalText(text) {
+    this.modalText.innerHTML = text
+  }
+}
+

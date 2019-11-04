@@ -1,13 +1,18 @@
-import get from './api.service.js'
 import { modalSingleton } from './error-popup/error-popup.js'
 import handleError from './error-handler'
-
+import {RequestFactoryProxy} from './requestFactoryProxy'
 
 const chanelCodes = ['usa-today', 'CNN', 'the-verge', 'cnbc']
 
-let getNews = async (chanelCode) => {
+var requestFactoryProxy = new RequestFactoryProxy();
+
+let getNews = async (channelCode) => {
     try {
-        return await get(chanelCode);
+        let options = {
+            method: "GET",
+            channelCode: channelCode
+        };
+        return await requestFactoryProxy.createRequest(options);
     }
     catch (error) {
         console.log(error);
@@ -54,9 +59,10 @@ function registerOnDropDownChangeEvent() {
                 clearNewsSection()
 
                 var news = await getNews(chanelCode);
-
-                let articles = news.articles;
-                formNewsSection(articles);
+                if (news) {
+                    let articles = news.articles;
+                    formNewsSection(articles);
+                }
             }
         })
     });
