@@ -1,22 +1,20 @@
-import { modalSingleton } from './error-popup/error-popup.js'
-import handleError from './error-handler'
-import {RequestFactoryProxy} from './requestFactoryProxy'
+import {RequestFactoryProxy} from '../http-core/requestFactoryProxy'
+import  ModuleLoader  from '../module-loader'
+import NewsService from './news-service'
 
 const chanelCodes = ['usa-today', 'CNN', 'the-verge', 'cnbc']
 
-var requestFactoryProxy = new RequestFactoryProxy();
+var loader = new ModuleLoader();
+var newsService = new NewsService();
 
 let getNews = async (channelCode) => {
     try {
-        let options = {
-            method: "GET",
-            channelCode: channelCode
-        };
-        return await requestFactoryProxy.createRequest(options);
+       return await newsService.get(channelCode)
     }
     catch (error) {
+        var errorHandler = await loader.load("ErrorHandler");
         console.log(error);
-        handleError(error.message);
+        errorHandler(error.message);
     }
 }
 

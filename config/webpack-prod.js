@@ -31,11 +31,12 @@ module.exports = {
 
 	output: {
 		filename: '[name].[chunkhash].js',
+		chunkFilename: '[name].bundle.js',
 		path: path.resolve(__dirname, '../dist/')
 	},
 
 	plugins: [new webpack.ProgressPlugin(), new HtmlWebpackPlugin({
-		template: './src/news-component.html',
+		template: './src/news-component/news-component.html',
 		filename: './dist/index.html'
 	})],
 
@@ -45,19 +46,6 @@ module.exports = {
 				test: /.(js|jsx)$/,
 				include: [path.resolve(__dirname, 'src')],
 				loader: 'babel-loader',
-
-				options: {
-					plugins: ['syntax-dynamic-import'],
-
-					presets: [
-						[
-							'@babel/preset-env',
-							{
-								modules: false
-							}
-						]
-					]
-				}
 			}
 		]
 	},

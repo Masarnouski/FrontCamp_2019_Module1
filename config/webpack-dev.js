@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const ROOT = path.resolve(__dirname, '..');
 
 /*
  * SplitChunksPlugin is enabled by default and replaced
@@ -28,15 +27,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 console.log("@@@@@@@@@@ USING DEV @@@@@@@@@@@@")
 module.exports = {
 	mode: 'development',
-	entry: './src/index.js',
+	entry: {index: './src/index.js'},
 
 	output: {
 		filename: '[name].[chunkhash].js',
+		chunkFilename: '[name].bundle.js',
 		path: path.resolve(__dirname, '../dist/')
 	},
 
 	plugins: [new webpack.ProgressPlugin(), new HtmlWebpackPlugin({
-		template: './src/news-component.html',
+		template: './src/news-component/news-component.html',
 		filename: 'index.html'
 	})],
 
@@ -45,21 +45,7 @@ module.exports = {
 			{
 				test: /.(js|jsx)$/,
 				include: [path.resolve(__dirname, 'src')],
-				loader: 'babel-loader',
-
-				options: {
-					plugins: ['syntax-dynamic-import'],
-
-					presets: [
-						[
-							'@babel/preset-env',
-							{
-								modules: false
-							}
-						]
-					]
-				}
-				
+				loader: 'babel-loader',				
 			},
 			{
 				test: /\.css$/i,
